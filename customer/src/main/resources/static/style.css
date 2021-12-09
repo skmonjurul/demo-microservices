@@ -1,0 +1,21 @@
+body {
+    /*background-color: cadetblue;*/
+    /*background-color: teal;*/
+    background-color: dodgerblue;
+}
+
+.box {
+    border-radius: 10px;
+    width: 400px;
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.box h1 {
+    color: azure;
+    font-size: 7vw;
+    text-align: left;
+    font-family: "Monaco";
+    font-weight: normal;
+}
