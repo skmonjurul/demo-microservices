@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  mysql:
+  mysql-customer:
     image: mysql:latest
     restart: always
     environment:
@@ -12,6 +12,21 @@ services:
       - '3307:3306'
     expose:
       - "3307"
+    networks:
+      - backend
+
+  mysql-fraud:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'fraud'
+      MYSQL_USER: 'demo'
+      MYSQL_PASSWORD: 'demo@123'
+      MYSQL_ROOT_PASSWORD: 'admin'
+    ports:
+      - '3308:3306'
+    expose:
+      - "3308"
     networks:
       - backend
 

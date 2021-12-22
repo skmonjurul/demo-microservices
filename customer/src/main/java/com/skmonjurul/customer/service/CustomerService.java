@@ -1,5 +1,6 @@
 package com.skmonjurul.customer.service;
 
+import com.skmonjurul.customer.dto.FraudCustomerDetails;
 import com.skmonjurul.customer.model.Customer;
 import com.skmonjurul.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,41 @@ public class CustomerService implements ICustomerService{
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private FraudServiceProxy fraudServiceProxy;
+
+    private final String FRAUD = "fraud";
+
     public void registerCustomer(Customer customer) {
+        //first add the customer to customer database
         customerRepository.save(customer);
+
+        //check if the customer is fraud or not by customer name
+        Boolean isFraud = checkCustomerFraudOrNot(customer.getFirstName() + " " + customer.getLastName());
+
+        //add the customer to fraud database as per fraud status
+        addCustomerToFraudService(customer.getId(), isFraud);
+    }
+
+    private void addCustomerToFraudService(Integer id, Boolean isFraud) {
+        fraudServiceProxy.addCustomer(buildFraudCustomerDetails(id, isFraud));
+    }
+
+    private FraudCustomerDetails buildFraudCustomerDetails(Integer id, Boolean isFraud) {
+        FraudCustomerDetails fraudCustomerDetails = new FraudCustomerDetails();
+        fraudCustomerDetails.setCustomerId(id);
+        fraudCustomerDetails.setIsFraud(isFraud);
+
+        return fraudCustomerDetails;
     }
 
     @Override
     public List<Customer> fetchAllCustomer() {
         return customerRepository.findAll();
+    }
+
+    //this is just a dummy method to check a customer fraud or not based on their name
+    private Boolean checkCustomerFraudOrNot(String name) {
+        return name.contains(FRAUD);
     }
 }
