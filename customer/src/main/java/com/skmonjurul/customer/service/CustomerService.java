@@ -1,5 +1,6 @@
 package com.skmonjurul.customer.service;
 
+import com.skmonjurul.clients.FraudClient;
 import com.skmonjurul.customer.dto.FraudCustomerDetails;
 import com.skmonjurul.customer.model.Customer;
 import com.skmonjurul.customer.repository.CustomerRepository;
@@ -18,6 +19,9 @@ public class CustomerService implements ICustomerService{
     @Autowired
     private FraudServiceProxy fraudServiceProxy;
 
+    @Autowired
+    private FraudClient fraudClient;
+
     private final String FRAUD = "fraud";
 
     public void registerCustomer(Customer customer) {
@@ -28,7 +32,17 @@ public class CustomerService implements ICustomerService{
         Boolean isFraud = checkCustomerFraudOrNot(customer.getFirstName() + " " + customer.getLastName());
 
         //add the customer to fraud database as per fraud status
-        addCustomerToFraudService(customer.getId(), isFraud);
+//        addCustomerToFraudService(customer.getId(), isFraud);
+
+        //add the customer to fraud database as per fraud status using feign clients
+        addCustomerToFraudServiceUsingOpenFeignClient(customer.getId(), isFraud);
+    }
+
+    private void addCustomerToFraudServiceUsingOpenFeignClient(Integer id, Boolean isFraud) {
+        com.skmonjurul.clients.dto.FraudCustomerDetails fraudCustomerDetails = new com.skmonjurul.clients.dto.FraudCustomerDetails();
+        fraudCustomerDetails.setCustomerId(id);
+        fraudCustomerDetails.setIsFraud(isFraud);
+        fraudClient.addCustomer(fraudCustomerDetails);
     }
 
     private void addCustomerToFraudService(Integer id, Boolean isFraud) {
