@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>customer</artifactId>
+    <artifactId>notification</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -42,14 +42,8 @@
             <groupId>com.skmonjurul</groupId>
             <artifactId>clients</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.skmonjurul</groupId>
-            <artifactId>customer-dto</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
 
 </project>

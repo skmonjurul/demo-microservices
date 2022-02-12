@@ -30,5 +30,20 @@ services:
     networks:
       - backend
 
+  mysql-notification:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'notification'
+      MYSQL_USER: 'demo'
+      MYSQL_PASSWORD: 'demo@123'
+      MYSQL_ROOT_PASSWORD: 'admin'
+    ports:
+      - '3309:3306'
+    expose:
+      - "3309"
+    networks:
+      - backend
+
 networks:
   backend:

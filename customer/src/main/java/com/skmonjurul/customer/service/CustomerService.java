@@ -1,6 +1,7 @@
 package com.skmonjurul.customer.service;
 
 import com.skmonjurul.clients.FraudClient;
+import com.skmonjurul.clients.dto.NotificationRequest;
 import com.skmonjurul.customer.dto.FraudCustomerDetails;
 import com.skmonjurul.customer.model.Customer;
 import com.skmonjurul.customer.repository.CustomerRepository;
@@ -22,6 +23,9 @@ public class CustomerService implements ICustomerService{
     @Autowired
     private FraudClient fraudClient;
 
+    @Autowired
+    private INotificationService notificationService;
+
     private final String FRAUD = "fraud";
 
     public void registerCustomer(Customer customer) {
@@ -35,7 +39,24 @@ public class CustomerService implements ICustomerService{
 //        addCustomerToFraudService(customer.getId(), isFraud);
 
         //add the customer to fraud database as per fraud status using feign clients
-        addCustomerToFraudServiceUsingOpenFeignClient(customer.getId(), isFraud);
+        //and return from here
+        if(isFraud) {
+            addCustomerToFraudServiceUsingOpenFeignClient(customer.getId(), isFraud);
+            return;
+        }
+
+        //send notification if customer is not fraud
+        //todo: make it async
+        sendNotification(NotificationRequest.builder()
+                .toCustomerId(customer.getId())
+                .toCustomerName(customer.getEmail())
+                .message(String.format("Hi %s, welcome to Kaffeestack..", customer.getFirstName()))
+                .build()
+        );
+    }
+
+    private void sendNotification(NotificationRequest notificationRequest) {
+        notificationService.send(notificationRequest);
     }
 
     private void addCustomerToFraudServiceUsingOpenFeignClient(Integer id, Boolean isFraud) {
