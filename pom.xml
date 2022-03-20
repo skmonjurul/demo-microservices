@@ -16,7 +16,8 @@
 		<module>clients</module>
 		<module>notification</module>
         <module>customer-dto</module>
-    </modules>
+		<module>api-gateway</module>
+	</modules>
 
 	<name>demo-microservices-multimodule-project</name>
 	<description>Demo Microservices multi module project for Spring Boot</description>
